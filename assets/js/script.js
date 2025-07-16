@@ -12,6 +12,7 @@ form.addEventListener("submit", (e) => {
     details: details.value,
   };
 
+  const notes = JSON.parse(localStorage.getItem("note")) || [];
   if (updateId !== null) {
     notes[updateId] = data;
     updateId = null;
@@ -70,5 +71,3 @@ function edit(id) {
 }
 
 show();
-
-
