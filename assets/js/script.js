@@ -3,6 +3,8 @@ const title = document.querySelector(".title");
 const details = document.querySelector(".details");
 const datarow = document.querySelector("#data-row");
 
+let updateId = null;
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const data = {
@@ -10,11 +12,16 @@ form.addEventListener("submit", (e) => {
     details: details.value,
   };
 
-  const notes = JSON.parse(localStorage.getItem("note")) || [];
-  notes.push(data);
+  if (updateId !== null) {
+    notes[updateId] = data;
+    updateId = null;
+  } else {
+    notes.push(data);
+  }
   localStorage.setItem("note", JSON.stringify(notes));
   show();
-  location.reload();
+  // location.reload();
+  form.reset();
 });
 
 function show() {
@@ -35,7 +42,7 @@ function show() {
                     ${text.details}</p>
                     </div>
                     <div class="text-end">
-                    <button class="btn btn-outline-warning border-0 rounded-pill"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="btn btn-outline-warning border-0 rounded-pill" onclick="edit(${index})"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="btn btn-outline-danger border-0 rounded-pill" onclick="del(${index})"><i class="fa-solid fa-trash-can"></i></button>
                     </div>
 
@@ -44,15 +51,24 @@ function show() {
     datarow.innerHTML = result;
   });
 }
-show();
 
 function del(id) {
-    const notes = JSON.parse(localStorage.getItem("note")) || []
+  const notes = JSON.parse(localStorage.getItem("note")) || [];
 
-    notes.splice(id,1)
+  notes.splice(id, 1);
 
-    localStorage.setItem("note",JSON.stringify(notes))
-    location.reload()
+  localStorage.setItem("note", JSON.stringify(notes));
+  show();
 }
+
+function edit(id) {
+  const notes = JSON.parse(localStorage.getItem("note")) || [];
+  title.value = notes[id].title;
+  details.value = notes[id].details;
+
+  updateId = id;
+}
+
+show();
 
 
